@@ -199,11 +199,83 @@ void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
 /*
  * Data read and write
  */
-uint8_t GPIO_ReadFromInputPin (GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
-uint16_t GPIO_ReadFromInputPort (GPIO_RegDef_t *pGPIOx);
-void GPIO_WritetoOutputPin (GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Value);
-void GPIO_WritetoOutputPort (GPIO_RegDef_t *pGPIOx, uint16_t Value);
-void GPIO_ToggleOutputPin (GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
+/*********************************************************************
+ * @fn      		  - GPIO_ReadFromInputPin
+ *
+ * @brief             -
+ *
+ * @param[in]         - base address of the gpio peripheral
+ * @param[in]         - Pin Number
+ * @param[in]         -
+ *
+ * @return            -  0 or 1
+ *
+ * @Note              -  none
+
+ */
+uint8_t GPIO_ReadFromInputPin (GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
+{
+	uint8_t value;
+	value = (uint8_t) (((pGPIOx->IDR) >> PinNumber) & 0x00000001);
+	return value;
+}
+
+uint16_t GPIO_ReadFromInputPort (GPIO_RegDef_t *pGPIOx)
+{
+	uint8_t value;
+	value = (uint8_t) pGPIOx->IDR;
+	return value;
+}
+
+/*********************************************************************
+ * @fn      		  - GPIO_WritetoOutputPin
+ *
+ * @brief             -
+ *
+ * @param[in]         - base address of the gpio peripheral
+ * @param[in]         - Pin Number
+ * @param[in]         - value
+ *
+ * @return            -  none
+ *
+ * @Note              -  none
+
+ */
+void GPIO_WritetoOutputPin (GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Value)
+{
+	if (Value == GPIO_PIN_SET)
+	{
+		//write 1 to the output data register at the bit field corresponding to the pin number
+		pGPIOx->ODR |= ((0x01) << PinNumber);
+	}else
+	{
+		//write 1 to the output data register at the bit field corresponding to the pin number
+		pGPIOx->ODR |= ~((0x01) << PinNumber);
+	}
+}
+void GPIO_WritetoOutputPort (GPIO_RegDef_t *pGPIOx, uint16_t Value)
+{
+	pGPIOx->ODR = (uint32_t) Value;
+}
+
+/*********************************************************************
+ * @fn      		  - GPIO_ToggleOutputPin
+ *
+ * @brief             -
+ *
+ * @param[in]         - base address of the gpio peripheral
+ * @param[in]         - Pin Number
+ * @param[in]         - value
+ *
+ * @return            -  none
+ *
+ * @Note              -  none
+
+ */
+void GPIO_ToggleOutputPin (GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
+{
+	pGPIOx->ODR ^= (1 << PinNumber);
+}
 
 /*
  * IRQ Configuration and ISR handling
