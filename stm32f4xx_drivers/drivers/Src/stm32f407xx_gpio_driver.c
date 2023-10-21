@@ -227,8 +227,37 @@ uint16_t GPIO_ReadFromInputPort (GPIO_RegDef_t *pGPIOx)
 	return value;
 }
 
-void GPIO_WritetoOutputPin (GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Value);
-void GPIO_WritetoOutputPort (GPIO_RegDef_t *pGPIOx, uint16_t Value);
+/*********************************************************************
+ * @fn      		  - GPIO_WritetoOutputPin
+ *
+ * @brief             -
+ *
+ * @param[in]         - base address of the gpio peripheral
+ * @param[in]         - Pin Number
+ * @param[in]         - value
+ *
+ * @return            -  none
+ *
+ * @Note              -  none
+
+ */
+void GPIO_WritetoOutputPin (GPIO_RegDef_t *pGPIOx, uint8_t PinNumber, uint8_t Value)
+{
+	if (Value == GPIO_PIN_SET)
+	{
+		//write 1 to the output data register at the bit field corresponding to the pin number
+		pGPIOx->ODR |= ((0x01) << PinNumber);
+	}else
+	{
+		//write 1 to the output data register at the bit field corresponding to the pin number
+		pGPIOx->ODR |= ~((0x01) << PinNumber);
+	}
+}
+void GPIO_WritetoOutputPort (GPIO_RegDef_t *pGPIOx, uint16_t Value)
+{
+	pGPIOx->ODR = (uint32_t) Value;
+}
+
 void GPIO_ToggleOutputPin (GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
 
 /*
