@@ -258,7 +258,24 @@ void GPIO_WritetoOutputPort (GPIO_RegDef_t *pGPIOx, uint16_t Value)
 	pGPIOx->ODR = (uint32_t) Value;
 }
 
-void GPIO_ToggleOutputPin (GPIO_RegDef_t *pGPIOx, uint8_t PinNumber);
+/*********************************************************************
+ * @fn      		  - GPIO_ToggleOutputPin
+ *
+ * @brief             -
+ *
+ * @param[in]         - base address of the gpio peripheral
+ * @param[in]         - Pin Number
+ * @param[in]         - value
+ *
+ * @return            -  none
+ *
+ * @Note              -  none
+
+ */
+void GPIO_ToggleOutputPin (GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
+{
+	pGPIOx->ODR ^= (1 << PinNumber);
+}
 
 /*
  * IRQ Configuration and ISR handling
