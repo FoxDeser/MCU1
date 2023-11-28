@@ -38,8 +38,8 @@ stm32f4xx_drivers.list \
 all: stm32f4xx_drivers.elf secondary-outputs
 
 # Tool invocations
-stm32f4xx_drivers.elf: $(OBJS) $(USER_OBJS) C:\Users\thaithinhtran\Downloads\MCU1\stm32f4xx_drivers\STM32F407VGTX_FLASH.ld
-	arm-none-eabi-gcc -o "stm32f4xx_drivers.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\thaithinhtran\Downloads\MCU1\stm32f4xx_drivers\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32f4xx_drivers.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+stm32f4xx_drivers.elf: $(OBJS) $(USER_OBJS) C:\Users\thaithinhtran\Downloads\Github\MCU1\stm32f4xx_drivers\STM32F407VGTX_FLASH.ld
+	arm-none-eabi-gcc -o "stm32f4xx_drivers.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\thaithinhtran\Downloads\Github\MCU1\stm32f4xx_drivers\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32f4xx_drivers.map" -Wl,--gc-sections -static -specs=rdimon.specs -lc -lrdimon --specs=nano.specs -mfloat-abi=soft -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

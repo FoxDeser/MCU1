@@ -1,0 +1,8 @@
+stm32f407xx_spi_driver.c:24:6:SPI_PeriClockControl	16	static
+stm32f407xx_spi_driver.c:78:6:SPI_Init	24	static
+stm32f407xx_spi_driver.c:137:6:SPI_SendData	24	static
+stm32f407xx_spi_driver.c:178:6:SPI_ReceiveData	24	static
+stm32f407xx_spi_driver.c:219:9:SPI_GetFlagStatus	16	static
+stm32f407xx_spi_driver.c:241:6:SPI_PeripheralControl	16	static
+stm32f407xx_spi_driver.c:265:6:SPI_SSI_Config	16	static
+stm32f407xx_spi_driver.c:289:6:SPI_SSOE_Config	16	static
