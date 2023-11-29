@@ -415,3 +415,39 @@ uint8_t SPI_ReceiveDataIT(SPI_Handler_t *pSPIHandler, uint8_t *pRxBuffer, uint32
 	}
 	return state;
 }
+
+void SPI_IRQHandling (SPI_Handler_t *pSPIHandler)
+{
+	uint8_t temp1, temp2;
+
+	//first lets checks for TXE
+	temp1 = pSPIHandler->pSPIx->SR & (1<< SPI_SR_TXE_Pos);
+	temp2 = pSPIHandler->pSPIx->CR2 & (1<< SPI_CR2_TXEIE_Pos);
+
+	if(temp1 && temp2)
+	{
+		//Handler TXE
+		spi_txe_interrupt_handler();
+	}
+
+	//second lets checks for RXNE
+	temp1 = pSPIHandler->pSPIx->SR & (1<< SPI_SR_RXNE_Pos);
+	temp2 = pSPIHandler->pSPIx->CR2 & (1<< SPI_CR2_RXNEIE_Pos);
+
+	if(temp1 && temp2)
+	{
+		//Handler RXNE
+		spi_rxne_interrupt_handler();
+	}
+
+	//third lets checks for OVR flag
+	temp1 = pSPIHandler->pSPIx->SR & (1<< SPI_SR_OVR_Pos);
+	temp2 = pSPIHandler->pSPIx->CR2 & (1<< SPI_CR2_ERRIE_Pos);
+
+	if(temp1 && temp2)
+	{
+		//Handler OVR error
+		spi_ovr_interrupt_handler();
+	}
+
+}
