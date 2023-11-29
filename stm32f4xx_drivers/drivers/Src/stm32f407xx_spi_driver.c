@@ -348,3 +348,27 @@ void SPI_IRQInterruptConfig (uint8_t IRQNumber, uint8_t EnorDi)
 		}
 	}
 }
+/*********************************************************************
+ * @fn      		  - SPI_IRQPriorityConfig
+ *
+ * @brief             -
+ *
+ * @param[in]         -
+ * @param[in]         -
+ * @param[in]         -
+ *
+ * @return            -  none
+ *
+ * @Note              -  none
+ */
+void SPI_IRQPriorityConfig(uint8_t IRQNumber,uint32_t IRQpriority)
+{
+	//1. first find out ipr register
+	uint8_t prx 		= IRQNumber / 4 ;
+	uint8_t prx_section = IRQNumber % 4 ;
+
+	uint8_t shift_amout = (8 * prx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+
+	*(NVIC_PR_BASE_ADDR + prx) &= ~(0xF << (shift_amout));
+	*(NVIC_PR_BASE_ADDR + prx) |= (IRQpriority << (shift_amout));
+}
