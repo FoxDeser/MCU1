@@ -296,3 +296,55 @@ void SPI_SSOE_Config(SPI_RegDef_t *pSPIx, uint8_t EnOrDI)
 		pSPIx->CR2 &= ~(1<<SPI_CR2_SSOE_Pos);
 	}
 }
+/*********************************************************************
+ * IRQ Configuration and ISR handling
+ *********************************************************************/
+/*********************************************************************
+ * @fn      		  - SPI_IRQConfig
+ *
+ * @brief             -
+ *
+ * @param[in]         -
+ * @param[in]         -
+ * @param[in]         -
+ *
+ * @return            -  none
+ *
+ * @Note              -  none
+ */
+void SPI_IRQInterruptConfig (uint8_t IRQNumber, uint8_t EnorDi)
+{
+	if (EnorDi == ENABLE)
+	{
+		if (IRQNumber <=31 )
+		{
+			//program ISER0 register
+			*NVIC_ISER0 |= 1 << IRQNumber;
+
+		}else if(IRQNumber >31 && IRQNumber < 64)
+		{
+			//program ISER1 register
+			*NVIC_ISER1 |= (1 << (IRQNumber % 32));
+		}else if(IRQNumber >=64 && IRQNumber < 96)
+		{
+			//program ISER2 register
+			*NVIC_ISER2 |= (1 << (IRQNumber % 64));
+		}
+	}else
+	{
+		if (IRQNumber <=31 )
+		{
+			//program ICER0 register
+			*NVIC_ICER0 |= 1 << IRQNumber;
+
+		}else if(IRQNumber >31 && IRQNumber < 64)
+		{
+			//program ICER1 register
+			*NVIC_ICER1 |= (1 << (IRQNumber % 32));
+		}else if(IRQNumber >=64 && IRQNumber < 96)
+		{
+			//program ICER2 register
+			*NVIC_ICER2 |= (1 << (IRQNumber % 64));
+		}
+	}
+}
