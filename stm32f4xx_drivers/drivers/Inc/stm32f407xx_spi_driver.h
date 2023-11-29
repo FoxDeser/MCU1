@@ -40,6 +40,13 @@ typedef struct
 }SPI_Handler_t;
 
 /*
+ * SPI application states
+ */
+#define SPI_READY			0
+#define SPI_BUSY_IN_RX		1
+#define SPI_BUSY_IN_TX		2
+
+/*
  * @SPI_DeviceMode
  */
 #define SPI_DEVICE_MODE_SLAVE	0
