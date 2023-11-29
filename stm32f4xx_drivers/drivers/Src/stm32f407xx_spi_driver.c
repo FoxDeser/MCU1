@@ -7,6 +7,9 @@
 
 #include "stm32f407xx_spi_driver.h"
 
+static void spi_txe_interrupt_handler(SPI_Handler_t *pSPIHandler);
+static void spi_rxne_interrupt_handler(SPI_Handler_t *pSPIHandler);
+static void spi_ovr_interrupt_handler(SPI_Handler_t *pSPIHandler);
 /*********************************************************************
  * @fn      		  - SPI_PeriClockControl
  *
@@ -449,5 +452,54 @@ void SPI_IRQHandling (SPI_Handler_t *pSPIHandler)
 		//Handler OVR error
 		spi_ovr_interrupt_handler();
 	}
+
+}
+
+/*
+ * Some helper function implementation
+ */
+static void spi_txe_interrupt_handler(SPI_Handler_t *pSPIHandler)
+{
+	//1. Check the DFF bit in CR1
+	if (pSPIHandler->pSPIx->CR1 & (1<<SPI_CR1_DFF_Pos))
+	{
+		// 16 bit DFF
+		//1. Load the data to data register
+		pSPIHandler->pSPIx->DR = *((uint16_t*)pSPIHandler->pTxBuffer);
+		pSPIHandler->TxLen--;
+		pSPIHandler->TxLen--;
+		(uint16_t*)pSPIHandler->pTxBuffer++;
+	}else
+	{
+		// 8 bit DFF
+		//1. Load the data to data register
+		pSPIHandler->pSPIx->DR = *(pSPIHandler->pTxBuffer);
+		pSPIHandler->TxLen--;
+		pSPIHandler->pTxBuffer++;
+	}
+	if(pSPIHandler->TxLen == 0)
+	{
+		//TxLen is 0 , so close the spi transmission
+		// and inform the application the TX is over
+
+		//1. Clear the TXEIE flag to prevent interrupt from TXE flag
+		pSPIHandler->pSPIx->CR2 &= ~(1<< SPI_CR2_TXEIE_Pos);
+
+		//2. Clear the Tx buffer
+		pSPIHandler->pTxBuffer = NULL;
+		pSPIHandler->TxLen	   = 0;
+		pSPIHandler->TxState   = SPI_READY;
+
+		//3. An application callback
+		SPI_ApplicationEventCallback(pSPIHandler,SPI_EVENT_TX_CMPLT);
+
+	}
+}
+static void spi_rxne_interrupt_handler(SPI_Handler_t *pSPIHandler)
+{
+
+}
+static void spi_ovr_interrupt_handler(SPI_Handler_t *pSPIHandler)
+{
 
 }
