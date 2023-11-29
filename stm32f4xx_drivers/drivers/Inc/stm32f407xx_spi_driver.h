@@ -47,6 +47,15 @@ typedef struct
 #define SPI_BUSY_IN_TX		2
 
 /*
+ * Possible SPI Application events
+ */
+#define SPI_EVENT_TX_CMPLT	1 //TX complete
+#define SPI_EVENT_RX_CMPLT	2 //RX complete
+#define SPI_EVENT_OVR_ERR	3
+#define SPI_EVENT_CRC_ERR	4
+
+
+/*
  * @SPI_DeviceMode
  */
 #define SPI_DEVICE_MODE_SLAVE	0
