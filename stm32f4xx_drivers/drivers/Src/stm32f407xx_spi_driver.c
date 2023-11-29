@@ -372,3 +372,82 @@ void SPI_IRQPriorityConfig(uint8_t IRQNumber,uint32_t IRQpriority)
 	*(NVIC_PR_BASE_ADDR + prx) &= ~(0xF << (shift_amout));
 	*(NVIC_PR_BASE_ADDR + prx) |= (IRQpriority << (shift_amout));
 }
+
+
+uint8_t SPI_SendDataIT(SPI_Handler_t *pSPIHandler, uint8_t *pTxBuffer, uint32_t Len)
+{
+	uint8_t state = pSPIHandler->TxState;
+	if (state != SPI_BUSY_IN_TX)
+	{
+		//1. Save the Tx buffer address and Len information in some global variables
+		pSPIHandler->pTxBuffer = pTxBuffer;
+		pSPIHandler->TxLen	   = Len;
+
+		//2. mark the SPI state as busy in transmission so that
+		// no one can take over same SPI peripheral until transmission is over
+		pSPIHandler->TxState	 = SPI_BUSY_IN_TX;
+
+		//3. Enable the TXEIE control bit to get interrupt whenever TXE flag is set in SR
+		pSPIHandler->pSPIx->CR2 |= 1<<SPI_CR2_TXEIE_Pos;
+		//4. Data transmission will be handled by the ISR code (will implementation later)
+
+	}
+	return state;
+}
+
+uint8_t SPI_ReceiveDataIT(SPI_Handler_t *pSPIHandler, uint8_t *pRxBuffer, uint32_t Len)
+{
+	uint8_t state = pSPIHandler->RxState;
+	if (state != SPI_BUSY_IN_RX)
+	{
+		//1. Save the Rx buffer address and Len information in some global variables
+		pSPIHandler->pRxBuffer = pRxBuffer;
+		pSPIHandler->RxLen	   = Len;
+
+		//2. mark the SPI state as busy in transmission so that
+		// no one can take over same SPI peripheral until receive is over
+		pSPIHandler->RxState	 = SPI_BUSY_IN_RX;
+
+		//3. Enable the RXNEIE control bit to get interrupt whenever RXEINE flag is set in SR
+		pSPIHandler->pSPIx->CR2 |= 1<<SPI_CR2_RXNEIE_Pos;
+		//4. Data receive will be handled by the ISR code (will implementation later)
+
+	}
+	return state;
+}
+
+void SPI_IRQHandling (SPI_Handler_t *pSPIHandler)
+{
+	uint8_t temp1, temp2;
+
+	//first lets checks for TXE
+	temp1 = pSPIHandler->pSPIx->SR & (1<< SPI_SR_TXE_Pos);
+	temp2 = pSPIHandler->pSPIx->CR2 & (1<< SPI_CR2_TXEIE_Pos);
+
+	if(temp1 && temp2)
+	{
+		//Handler TXE
+		spi_txe_interrupt_handler();
+	}
+
+	//second lets checks for RXNE
+	temp1 = pSPIHandler->pSPIx->SR & (1<< SPI_SR_RXNE_Pos);
+	temp2 = pSPIHandler->pSPIx->CR2 & (1<< SPI_CR2_RXNEIE_Pos);
+
+	if(temp1 && temp2)
+	{
+		//Handler RXNE
+		spi_rxne_interrupt_handler();
+	}
+
+	//third lets checks for OVR flag
+	temp1 = pSPIHandler->pSPIx->SR & (1<< SPI_SR_OVR_Pos);
+	temp2 = pSPIHandler->pSPIx->CR2 & (1<< SPI_CR2_ERRIE_Pos);
+
+	if(temp1 && temp2)
+	{
+		//Handler OVR error
+		spi_ovr_interrupt_handler();
+	}
+
+}

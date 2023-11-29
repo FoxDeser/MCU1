@@ -270,7 +270,7 @@ int main(void)
 		//read the ack byte received
 		SPI_ReceiveData(SPI2,&ack_byte,sizeof(ack_byte));
 
-		uint8_t message[] = "Hello ! i am THINH ??";
+		uint8_t message[] = "Hello ! i am THINH !";
 		if( SPI_VerifyResponse(ack_byte))
 		{
 			args[0] = strlen((char*)message);
