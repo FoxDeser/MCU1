@@ -149,5 +149,13 @@ void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnOrDI);
 uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FLAG_NAME);
 void SPI_SSI_Config(SPI_RegDef_t *pSPIx, uint8_t EnOrDI);
 void SPI_SSOE_Config(SPI_RegDef_t *pSPIx, uint8_t EnOrDI);
+void SPI_ClearOVRFlag(SPI_RegDef_t *pSPIx);
+void SPI_CloseTransmission(SPI_Handler_t *pSPIHandler);
+void SPI_CloseReception(SPI_Handler_t *pSPIHandler);
+
+/*
+ * Application call back
+ */
+void SPI_ApplicationEventCallback(SPI_Handler_t *pSPIHandler,uint8_t ApplicationEvent);
 
 #endif /* INC_STM32F407XX_SPI_DRIVER_H_ */
