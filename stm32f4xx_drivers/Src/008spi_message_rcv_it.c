@@ -123,7 +123,6 @@ extern void initialise_monitor_handles(void);
 int main(void)
 {
 	initialise_monitor_handles();
-	printf("Hello\n");
 
 	uint8_t dummy = 0xff;
 
@@ -160,7 +159,10 @@ int main(void)
 		while(!rcvStop)
 		{
 			/* fetch the data from the SPI peripheral byte by byte in interrupt mode */
+
+			//Wait for TX state is free
 			while ( SPI_SendDataIT(&SPI2handle,&dummy,1) == SPI_BUSY_IN_TX);
+			//Wait for RX State is free
 			while ( SPI_ReceiveDataIT(&SPI2handle,&ReadByte,1) == SPI_BUSY_IN_RX );
 		}
 
@@ -176,12 +178,9 @@ int main(void)
 		dataAvailable = 0;
 
 		GPIO_IRQInterruptConfig(IRQ_NO_EXTI9_5,ENABLE);
-
-
 	}
 
 	return 0;
-
 }
 
 /* Runs when a data byte is received from the peripheral over SPI*/

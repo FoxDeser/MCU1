@@ -393,7 +393,6 @@ uint8_t SPI_SendDataIT(SPI_Handler_t *pSPIHandler, uint8_t *pTxBuffer, uint32_t 
 		//3. Enable the TXEIE control bit to get interrupt whenever TXE flag is set in SR
 		pSPIHandler->pSPIx->CR2 |= 1<<SPI_CR2_TXEIE_Pos;
 		//4. Data transmission will be handled by the ISR code (will implementation later)
-
 	}
 	return state;
 }
