@@ -217,6 +217,23 @@ typedef struct
 	__vo uint32_t	I2SPR;			//SPI_I2S prescaler register
 }SPI_RegDef_t;
 
+/*
+ * peripheral register definition structure for I2C
+ */
+typedef struct
+{
+     __vo uint32_t CR1;       //I2C Control register 1       0x00
+     __vo uint32_t CR2;       //2C Control register 2        0x04
+     __vo uint32_t OAR1;      //2C Own address register 1    0x08
+     __vo uint32_t OAR2;       //I2C Own address register 2  0x0C
+     __vo uint32_t DR;        //I2C Data register             0x10
+     __vo uint32_t SR1;       //I2C Status register 1        0x14
+     __vo uint32_t SR2;       //I2C Status register 1        0x18
+     __vo uint32_t CCR;       //I2C Clock control register   0x1C
+     __vo uint32_t TRISE;       //I2C TRISE register         0x20
+     __vo uint32_t FLTR;      //2C FLTR register             0x24
+}I2C_RegDef_t;
+
 
 /*
  * peripheral definition (Peripheral base addresses type casted to xxx_RegDef_t)
