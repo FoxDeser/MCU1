@@ -464,4 +464,64 @@ typedef struct
 #define		 SPI_SR_BSY_Pos					7
 #define		 SPI_SR_FRE_Pos					8
 
+/*
+ *********************************************
+ *Bit position definition of I2C peripheral***
+ *********************************************
+ */
+// I2C Control register 1 (I2C_CR1)
+#define        I2C_CR1_PE_Pos                0                
+#define        I2C_CR1_SMBUS_Pos             1                
+#define        I2C_CR1_SMBTYPE_Pos           3                
+#define        I2C_CR1_ENARP_Pos             4                
+#define        I2C_CR1_ENPEC_Pos             5                
+#define        I2C_CR1_ENGC_Pos              6                
+#define        I2C_CR1_NOSTRETCH_Pos         7                
+#define        I2C_CR1_START_Pos             8                
+#define        I2C_CR1_STOP_Pos              9                
+#define        I2C_CR1_ACK_Pos               10                
+#define        I2C_CR1_POS_Pos               11                
+#define        I2C_CR1_PEC_Pos               12                
+#define        I2C_CR1_ALERT_Pos             13                
+#define        I2C_CR1_SWRST_Pos             15
+
+// I2C Control register 2 (I2C_CR2)
+#define        I2C_CR2_FREQ_Pos              0
+#define        I2C_CR2_ITERREN_Pos           8
+#define        I2C_CR2_ITEVTEN_Pos           9
+#define        I2C_CR2_ITBUFEN_Pos           10
+#define        I2C_CR2_DMAEN_Pos             11
+#define        I2C_CR2_LAST_Pos              12
+
+// I2C Status register 1 (I2C_SR1)
+#define        I2C_SR1_SB_Pos                0
+#define        I2C_SR1_ADDR_Pos              1
+#define        I2C_SR1_BTF_Pos               2
+#define        I2C_SR1_ADD10_Pos             3
+#define        I2C_SR1_STOPF_Pos             4
+#define        I2C_SR1_RxNE_Pos              6
+#define        I2C_SR1_TxE_Pos               7
+#define        I2C_SR1_BERR_Pos              8
+#define        I2C_SR1_ARLO_Pos              9
+#define        I2C_SR1_AF_Pos                10
+#define        I2C_SR1_OVR_Pos               11
+#define        I2C_SR1_PECERR_Pos            12
+#define        I2C_SR1_TIMEOUT_Pos           14
+#define        I2C_SR1_SMBALERT_Pos          15
+
+// I2C Status register 2 (I2C_SR2)
+#define        I2C_SR2_MSL_Pos               0
+#define        I2C_SR2_BUSY_Pos              1
+#define        I2C_SR2_TRA_Pos               2
+#define        I2C_SR2_GENCALL_Pos           4
+#define        I2C_SR2_SMBDEFAULT_Pos        5
+#define        I2C_SR2_SMBHOST_Pos           6
+#define        I2C_SR2_DUALF_Pos             7
+#define        I2C_SR2_PEC_Pos               8
+
+//I2C Clock control register (I2C_CCR)
+#define        I2C_CCR_CCR_Pos               0
+#define        I2C_CCR_DUTY_Pos              14
+#define        I2C_CCR_FS                    15
+
 #endif	/* STM32F407XX_H_ */
