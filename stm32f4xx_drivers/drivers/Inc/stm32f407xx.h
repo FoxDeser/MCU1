@@ -257,6 +257,13 @@ typedef struct
 #define SPI4	  ((SPI_RegDef_t*)SPI4_BASEADDR)
 
 /*
+ * I2C definition (I2C base addresses type casted to I2C_RegDef_t)
+ */
+#define I2C1        ((I2C_RegDef_t*)I2C1_BASEADDR)
+#define I2C2        ((I2C_RegDef_t*)I2C2_BASEADDR)
+#define I2C3        ((I2C_RegDef_t*)I2C3_BASEADDR)
+
+/*
  * RCC definition (RCC base addresses type casted to RCC_RegDef_t)
  */
 #define RCC       ((RCC_RegDef_t*)RCC_BASEADDR)
