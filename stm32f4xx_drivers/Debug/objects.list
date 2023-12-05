@@ -1,4 +1,5 @@
-"Src/007spi_cmd_handling.o"
+"Src/008spi_message_rcv_it.o"
 "Startup/startup_stm32f407vgtx.o"
 "drivers/Src/stm32f407xx_gpio_driver.o"
+"drivers/Src/stm32f407xx_i2c_driver.o"
 "drivers/Src/stm32f407xx_spi_driver.o"
