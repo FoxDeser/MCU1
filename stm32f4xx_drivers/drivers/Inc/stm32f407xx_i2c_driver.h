@@ -26,9 +26,9 @@ typedef struct
  */
 typedef struct
 {
-	SPI_RegDef_t	 *pI2Cx;		//This holds the base address of I2Cx peripheral
-	SPI_Config_t	 I2CConfig;
-}SPI_Handler_t;
+	I2C_RegDef_t	 *pI2Cx;		//This holds the base address of I2Cx peripheral
+	I2C_Config_t	 I2CConfig;
+}I2C_Handler_t;
 
 /*
  * @I2C_SCLSpeed
@@ -49,6 +49,41 @@ typedef struct
 #define I2C_FM_DUTY_2       0
 #define I2C_FM_DUTY_16_9    1
 
-#define
+/*****************************************************************************************
+ * 						APIs supported by this driver
+ * 				For more information about the APIs check the function definitions
+ *****************************************************************************************/
+/*
+ * Peripheral Clock setup
+ */
+void I2C_PeriClockControl(I2C_RegDef_t *pI2Cx, uint8_t EnorDi);
+
+/*
+ * Init and De-Init
+ */
+void I2C_Init(I2C_Handler_t *pI2CHandler);
+void I2C_DeInit(I2C_Handler_t *pI2CHandler);
+
+/*
+ * Data Send and Receive
+ */
+
+
+/*
+ * IRQ Configuratuon and ISR handling
+ */
+void I2C_IRQInterruptConfig (uint8_t IRQNumber, uint8_t EnorDi);
+void I2C_IRQPriorityConfig(uint8_t IRQNumber,uint32_t IRQpriority);
+
+/*
+ * Other Peripheral Control APIS
+ */
+void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnOrDI);
+uint8_t I2C_GetFlagStatus(I2C_RegDef_t *pI2Cx, uint32_t FLAG_NAME);
+
+/*
+ * Application call back
+ */
+void I2C_ApplicationEventCallback(I2C_Handler_t *pI2CHandler,uint8_t ApplicationEvent);
 
 #endif /* INC_STM32F407XX_I2C_DRIVER_H_ */
