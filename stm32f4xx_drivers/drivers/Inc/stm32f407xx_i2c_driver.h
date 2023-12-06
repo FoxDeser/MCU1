@@ -26,7 +26,7 @@ typedef struct
  */
 typedef struct
 {
-	I2C_RegDef_t	 *pI2Cx;		//This holds the base address of I2Cx peripheral
+	I2C_RegDef_t*	 pI2Cx;		//This holds the base address of I2Cx peripheral
 	I2C_Config_t	 I2CConfig;
 }I2C_Handler_t;
 
