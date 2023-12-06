@@ -167,3 +167,39 @@ void I2C_Init(I2C_Handler_t *pI2CHandler)
 	}
 	pI2CHandler->pI2Cx->CCR = temreg;
 }
+
+/*********************************************************************
+ * @fn      		  - I2C_MasterSendData
+ *
+ * @brief             - This function send data
+ *
+ * @param[in]         - The address of Handle structure for I2Cx peripheral
+ * @param[in]         - The transmit buffer
+ * @param[in]         - Length of the message
+ * @param[in]         - Slave Address
+ *
+ * @return            -  none
+ *
+ * @Note              -  Blocking call
+ */
+void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t Len,uint8_t SlaveAddr)
+{
+	//1. Generate the START condtion
+
+	//2. Confirm that start generation is completed by checking the SB flag in the SR1
+
+	//3. Send the address of the slave with r/nw bit set to w(0) (total 8 bits)
+
+	//4. Cofirm that address phase is completed by checking the ADDR flag in teh SR1
+
+	//5. Clear the ADDR flag according to its software sequence
+
+	//6. Send the data until Len becomes 0
+
+	//7. When Len becomes 0 wait for TXE=1 and BTF = 1 before generating the STOP condition
+	//   Note: TXE=1 , BTF=1, means that both SR and DR are empty and next transmission should
+	//   begin when BTF=1 SCL will be stretched (pull to LOW)
+
+	//8. Generate STOP condition and master need not to wait for completion of stop condition.
+	//   Note: generating STOP, automatically clears the BTF
+}
