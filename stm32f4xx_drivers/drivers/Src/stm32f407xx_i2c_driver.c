@@ -8,6 +8,9 @@
 #include "stm32f407xx_I2C_driver.h"
 
 static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx);
+static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr);
+static void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx);
+static void I2C_ClearADDRFlag(I2C_RegDef_t* pI2Cx);
 
 /*********************************************************************
  * @fn      		  - I2C_PeriClockControl
@@ -191,22 +194,37 @@ void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t L
 
 	//2. Confirm that start generation is completed by checking the SB flag in the SR1
 	// 	 Note : Until SB is cleared SCL will be stretched (pulled to LOW)
-	while (!I2C_GetFlagStatus(pI2CHandler->pI2Cx,I2C_FLAG_SB));
+	while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx,I2C_FLAG_SB));
 
 	//3. Send the address of the slave with r/nw bit set to w(0) (total 8 bits)
+	I2C_ExecuteAddressPhase(pI2CHandler->pI2Cx,SlaveAddr);
 
-	//4. Cofirm that address phase is completed by checking the ADDR flag in teh SR1
+	//4. Confirm that address phase is completed by checking the ADDR flag in teh SR1
+	while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx,I2C_FLAG_ADDR));
 
 	//5. Clear the ADDR flag according to its software sequence
+	I2C_ClearADDRFlag(pI2CHandler->pI2Cx);
 
 	//6. Send the data until Len becomes 0
+	while (Len > 0 )
+	{
+		//Wait until TxE is set
+		while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx, I2C_FLAG_TxE));
+		pI2CHandler->pI2Cx->DR = *(pTxbuffer);
+		pTxbuffer++;
+		Len--;
+
+	}
 
 	//7. When Len becomes 0 wait for TXE=1 and BTF = 1 before generating the STOP condition
 	//   Note: TXE=1 , BTF=1, means that both SR and DR are empty and next transmission should
 	//   begin when BTF=1 SCL will be stretched (pull to LOW)
+	while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx, I2C_FLAG_TxE));
+	while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx, I2C_FLAG_BTF));
 
 	//8. Generate STOP condition and master need not to wait for completion of stop condition.
 	//   Note: generating STOP, automatically clears the BTF
+	I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
 }
 
 /*
@@ -225,4 +243,26 @@ uint8_t I2C_GetFlagStatusSR1(I2C_RegDef_t* pI2Cx, uint32_t FlagName)
 
 	}
 	return FLAG_RESET;
+}
+
+void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr)
+{
+	SlaveAddr = SlaveAddr << 1;
+
+	//The LSB is R/nW bit which mus be set to 0 for Write
+	SlaveAddr &= ~(1);
+
+	pI2Cx->DR = SlaveAddr;
+}
+
+void I2C_ClearADDRFlag(I2C_RegDef_t* pI2Cx)
+{
+	uint32_t dummyRead = pI2Cx->SR1;
+	dummyRead = pI2Cx->SR2;
+	(void) dummyRead;
+}
+
+void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx)
+{
+	pI2Cx->CR1 |= (1<<I2C_CR1_STOP_Pos);
 }
