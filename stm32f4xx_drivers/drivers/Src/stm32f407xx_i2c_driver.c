@@ -7,6 +7,8 @@
 
 #include "stm32f407xx_I2C_driver.h"
 
+static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx);
+
 /*********************************************************************
  * @fn      		  - I2C_PeriClockControl
  *
@@ -184,9 +186,12 @@ void I2C_Init(I2C_Handler_t *pI2CHandler)
  */
 void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t Len,uint8_t SlaveAddr)
 {
-	//1. Generate the START condtion
+	//1. Generate the START condition
+	I2C_GenerateStartCondition(pI2CHandler->pI2Cx);
 
 	//2. Confirm that start generation is completed by checking the SB flag in the SR1
+	// 	 Note : Until SB is cleared SCL will be stretched (pulled to LOW)
+	while (!I2C_GetFlagStatus(pI2CHandler->pI2Cx,I2C_FLAG_SB));
 
 	//3. Send the address of the slave with r/nw bit set to w(0) (total 8 bits)
 
@@ -202,4 +207,22 @@ void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t L
 
 	//8. Generate STOP condition and master need not to wait for completion of stop condition.
 	//   Note: generating STOP, automatically clears the BTF
+}
+
+/*
+ * Helper function
+ */
+void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx)
+{
+	pI2Cx->CR1 |= (1<<I2C_CR1_START_Pos);
+}
+
+uint8_t I2C_GetFlagStatusSR1(I2C_RegDef_t* pI2Cx, uint32_t FlagName)
+{
+	if (pI2Cx->SR1 & FlagName)
+	{
+		return FLAG_SET;
+
+	}
+	return FLAG_RESET;
 }
