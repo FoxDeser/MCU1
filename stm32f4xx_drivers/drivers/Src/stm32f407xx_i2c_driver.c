@@ -170,7 +170,8 @@ void I2C_Init(I2C_Handler_t *pI2CHandler)
 		}
 		temreg |= ccr_value & 0xFFF;
 	}
-	pI2CHandler->pI2Cx->CCR = temreg;
+	pI2CHandler->pI2Cx->CCR &= ~(0xFFF);
+	pI2CHandler->pI2Cx->CCR |= temreg;
 
 	//TRISE Configuration
 	if(pI2CHandler->I2CConfig.I2C_SCLSpeed <= I2C_SCL_SPEED_SM)
@@ -182,6 +183,7 @@ void I2C_Init(I2C_Handler_t *pI2CHandler)
 		//mode is fast mode
 		temreg = ((RCC_GetPCLK1Value() * 3) / 10000000) + 1;
 	}
+	pI2CHandler->pI2Cx->TRISE &= ~(0x3F);
 	pI2CHandler->pI2Cx->TRISE |= temreg;
 }
 
@@ -237,6 +239,20 @@ void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t L
 	//8. Generate STOP condition and master need not to wait for completion of stop condition.
 	//   Note: generating STOP, automatically clears the BTF
 	I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
+}
+
+void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnOrDI)
+{
+	if (EnOrDI == ENABLE)
+	{
+		pI2Cx->CR1 |= 1<<I2C_CR1_PE_Pos;
+
+		//Enable the ACK bit in CR1
+		pI2Cx->CR1	|= 1 << I2C_CR1_ACK_Pos;
+	}else
+	{
+		pI2Cx->CR1 &= ~(1<<I2C_CR1_PE_Pos);
+	}
 }
 
 /*
