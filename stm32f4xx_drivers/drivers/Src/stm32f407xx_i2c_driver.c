@@ -241,6 +241,66 @@ void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t L
 	I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
 }
 
+/*********************************************************************
+ * @fn      		  - I2C_MasterRecieveData
+ *
+ * @brief             - This function receive data
+ *
+ * @param[in]         - The address of Handle structure for I2Cx peripheral
+ * @param[in]         - The receive buffer
+ * @param[in]         - Length of the message
+ * @param[in]         - Slave Address
+ *
+ * @return            -  none
+ *
+ * @Note              -  Blocking call
+ */
+void I2C_MasterRecieveData(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_t Len,uint8_t SlaveAddr)
+{
+	//1. Generate START condition
+
+
+	//2. Confirm that start generation was completed
+
+	//3. Send the address of the slave with r/nw bit set to R(1) (8bits)
+
+	//4. Wait until address is complete by check ADDR flag in SR1
+	if(Len == 1)
+	{
+		//Read a single byte from Slave
+		//1. Disable ACKing
+
+		//2. Clear the ADDR flag
+
+		//3. wait until RXNE = 1
+
+		//4. Generate STOP condition
+
+		//5. Read data in buffer DR
+	}
+	if(Len > 1)
+	{
+		//Read multiple bytes
+		//Clear ADDR flag
+
+		//Read the data until Len is zero
+
+		for(uint32_t i = Len ; i>0 ; i--)
+		{
+			//Wait until RXNE =1
+			if (i ==2)//last 2 bytes remaining
+			{
+				//Clear the ACKing
+
+				//Generate STOP condition
+			}
+			//Read the data from data register DR into buffer
+
+			//Increment the buffer address
+		}
+		//Re-Enable ACKing
+	}
+}
 void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnOrDI)
 {
 	if (EnOrDI == ENABLE)

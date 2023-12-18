@@ -22,7 +22,7 @@ void delay(void)
 I2C_Handler_t I2C1Handler;
 
 //Some data
-uint8_t some_data[] = "Hi , my name is Thinh Tran :)) .\n";
+uint8_t some_data[] = "Hi,Thinh from rvc:)).\n";
 
 /*
  * PB6 --> I2C1_SCL
@@ -37,7 +37,7 @@ void I2C1_GPIOInits(void)
 	I2CPins.GPIO_Pinconfig.GPIO_PinMode			= GPIO_MODE_ALTFN;
 	I2CPins.GPIO_Pinconfig.GPIO_PinAltMode		= 4;
 	I2CPins.GPIO_Pinconfig.GPIO_PinOPType		= GPIO_OP_TYPE_OD;
-	I2CPins.GPIO_Pinconfig.GPIO_PinPuPdControl	= GPIO_NO_PUPD;
+	I2CPins.GPIO_Pinconfig.GPIO_PinPuPdControl	= GPIO_PIN_PU;
 	I2CPins.GPIO_Pinconfig.GPIO_pinSpeed		= GPIO_SPEED_FAST;
 
 	//SCL
