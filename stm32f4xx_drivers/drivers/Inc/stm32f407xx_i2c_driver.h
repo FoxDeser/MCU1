@@ -120,6 +120,7 @@ void I2C_IRQPriorityConfig(uint8_t IRQNumber,uint32_t IRQpriority);
  */
 void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnOrDI);
 uint8_t I2C_GetFlagStatusSR1(I2C_RegDef_t *pI2Cx, uint32_t FLAG_NAME);
+void I2C_ManageAcking(I2C_RegDef_t* pI2Cx,uint8_t EnorDi);
 
 /*
  * Application call back

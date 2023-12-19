@@ -8,7 +8,8 @@
 #include "stm32f407xx_I2C_driver.h"
 
 static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx);
-static void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr);
+static void I2C_ExecuteAddressPhaseWrite(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr);
+static void I2C_ExecuteAddressPhaseRead(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr);
 static void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx);
 static void I2C_ClearADDRFlag(I2C_RegDef_t* pI2Cx);
 
@@ -211,7 +212,7 @@ void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t L
 	while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx,I2C_FLAG_SB));
 
 	//3. Send the address of the slave with r/nw bit set to w(0) (total 8 bits)
-	I2C_ExecuteAddressPhase(pI2CHandler->pI2Cx,SlaveAddr);
+	I2C_ExecuteAddressPhaseWrite(pI2CHandler->pI2Cx,SlaveAddr);
 
 	//4. Confirm that address phase is completed by checking the ADDR flag in teh SR1
 	while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx,I2C_FLAG_ADDR));
@@ -258,47 +259,66 @@ void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t L
 void I2C_MasterRecieveData(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_t Len,uint8_t SlaveAddr)
 {
 	//1. Generate START condition
-
+	I2C_GenerateStartCondition(pI2CHandler->pI2Cx);
 
 	//2. Confirm that start generation was completed
+	while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx,I2C_FLAG_SB));
 
 	//3. Send the address of the slave with r/nw bit set to R(1) (8bits)
+	I2C_ExecuteAddressPhaseRead(pI2CHandler->pI2Cx,SlaveAddr);
 
 	//4. Wait until address is complete by check ADDR flag in SR1
+	while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx,I2C_FLAG_ADDR));
+
 	if(Len == 1)
 	{
 		//Read a single byte from Slave
 		//1. Disable ACKing
+		I2C_ManageAcking(pI2CHandler->pI2Cx, DISABLE);
 
-		//2. Clear the ADDR flag
+		//2. Generate STOP condition
+		I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
 
-		//3. wait until RXNE = 1
+		//3. Clear the ADDR flag
+		I2C_ClearADDRFlag(pI2CHandler->pI2Cx);
 
-		//4. Generate STOP condition
+		//4. wait until RXNE = 1
+		while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx, I2C_FLAG_RxNE));
 
 		//5. Read data in buffer DR
+		*pRxBuffer = pI2CHandler->pI2Cx->DR;
 	}
 	if(Len > 1)
 	{
 		//Read multiple bytes
 		//Clear ADDR flag
+		I2C_ClearADDRFlag(pI2CHandler->pI2Cx);
 
 		//Read the data until Len is zero
-
 		for(uint32_t i = Len ; i>0 ; i--)
 		{
-			//Wait until RXNE =1
-			if (i ==2)//last 2 bytes remaining
+			//Wait until RXNE = 1
+			while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx, I2C_FLAG_RxNE));
+
+			if (i == 2)//last 2 bytes remaining
 			{
 				//Clear the ACKing
+				I2C_ManageAcking(pI2CHandler->pI2Cx, DISABLE);
 
 				//Generate STOP condition
+				I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
 			}
 			//Read the data from data register DR into buffer
+			*pRxBuffer = pI2CHandler->pI2Cx->DR;
 
 			//Increment the buffer address
+			pRxBuffer++;
 		}
 		//Re-Enable ACKing
+		if(pI2CHandler->I2CConfig.I2C_ACKControl == I2C_ACK_ENABLE)
+		{
+			I2C_ManageAcking(pI2CHandler->pI2Cx, ENABLE);
+		}
 	}
 }
 void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnOrDI)
@@ -333,16 +353,36 @@ uint8_t I2C_GetFlagStatusSR1(I2C_RegDef_t* pI2Cx, uint32_t FlagName)
 	return FLAG_RESET;
 }
 
-void I2C_ExecuteAddressPhase(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr)
+void I2C_ExecuteAddressPhaseWrite(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr)
 {
 	SlaveAddr = SlaveAddr << 1;
 
-	//The LSB is R/nW bit which mus be set to 0 for Write
+	//The LSB is R/nW bit which must be set to 0 for Write
 	SlaveAddr &= ~(1);
 
 	pI2Cx->DR = SlaveAddr;
 }
 
+void I2C_ExecuteAddressPhaseRead(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr)
+{
+	SlaveAddr = SlaveAddr << 1;
+
+	//The LSB is R/nW bit which must be set to 1 for Read
+	SlaveAddr |= 1;
+
+	pI2Cx->DR = SlaveAddr;
+}
+
+void I2C_ManageAcking(I2C_RegDef_t* pI2Cx,uint8_t EnorDi)
+{
+	if(EnorDi == I2C_ACK_ENABLE)
+	{
+		pI2Cx->CR1 |= 1 << I2C_CR1_ACK_Pos;
+	} else
+	{
+		pI2Cx->CR1 &= ~(1 << I2C_CR1_ACK_Pos);
+	}
+}
 void I2C_ClearADDRFlag(I2C_RegDef_t* pI2Cx)
 {
 	uint32_t dummyRead = pI2Cx->SR1;
