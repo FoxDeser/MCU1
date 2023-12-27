@@ -197,7 +197,7 @@ void I2C_Init(I2C_Handler_t *pI2CHandler)
  *
  * @Note              -  Blocking call
  */
-void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t Len,uint8_t SlaveAddr)
+void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t Len,uint8_t SlaveAddr,uint8_t Sr)
 {
 	//1. Generate the START condition
 	I2C_GenerateStartCondition(pI2CHandler->pI2Cx);
@@ -234,7 +234,10 @@ void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t L
 
 	//8. Generate STOP condition and master need not to wait for completion of stop condition.
 	//   Note: generating STOP, automatically clears the BTF
-	I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
+	if(Sr == I2C_DISABLE_SR)
+	{
+		I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
+	}
 }
 
 /*********************************************************************
@@ -251,7 +254,7 @@ void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t L
  *
  * @Note              -  Blocking call
  */
-void I2C_MasterRecieveData(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_t Len,uint8_t SlaveAddr)
+void I2C_MasterRecieveData(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_t Len,uint8_t SlaveAddr,uint8_t Sr)
 {
 	//1. Generate START condition
 	I2C_GenerateStartCondition(pI2CHandler->pI2Cx);
@@ -278,7 +281,10 @@ void I2C_MasterRecieveData(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_
 		while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx, I2C_FLAG_RxNE));
 
 		//4. Generate STOP condition
-		I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
+		if(Sr == I2C_DISABLE_SR)
+		{
+			I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
+		}
 
 		//5. Read data in buffer DR
 		*pRxBuffer = pI2CHandler->pI2Cx->DR;
@@ -301,7 +307,10 @@ void I2C_MasterRecieveData(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_
 				I2C_ManageAcking(pI2CHandler->pI2Cx, DISABLE);
 
 				//Generate STOP condition
-				I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
+				if(Sr == I2C_DISABLE_SR)
+				{
+					I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
+				}
 			}
 			//Read the data from data register DR into buffer
 			*pRxBuffer = pI2CHandler->pI2Cx->DR;

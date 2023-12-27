@@ -85,7 +85,8 @@ typedef struct
 #define I2C_FLAG_SMBHOST		(1<<I2C_SR2_SMBHOST_Pos)
 #define I2C_FLAG_DUALF			(1<<I2C_SR2_DUALF_Pos)
 
-
+#define I2C_DISABLE_SR	RESET
+#define I2C_ENABLE_SR	SET
 
 
 /*****************************************************************************************
@@ -106,8 +107,8 @@ void I2C_DeInit(I2C_Handler_t *pI2CHandler);
 /*
  * Data Send and Receive
  */
-void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t Len,uint8_t SlaveAddr);
-void I2C_MasterRecieveData(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_t Len,uint8_t SlaveAddr);
+void I2C_MasterSendData(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t Len,uint8_t SlaveAddr,uint8_t Sr);
+void I2C_MasterRecieveData(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_t Len,uint8_t SlaveAddr,uint8_t Sr);
 
 /*
  * IRQ Configuratuon and ISR handling
