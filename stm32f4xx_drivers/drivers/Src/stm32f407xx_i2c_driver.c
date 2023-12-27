@@ -131,11 +131,6 @@ void I2C_Init(I2C_Handler_t *pI2CHandler)
 	//Enable the clock for the I2Cx peripheral
 	I2C_PeriClockControl(pI2CHandler->pI2Cx, ENABLE);
 
-	//Set the ACK control bit
-	temreg |= pI2CHandler->I2CConfig.I2C_ACKControl << 10;
-	pI2CHandler->pI2Cx->CR1 &= ~(1<<10);
-	pI2CHandler->pI2Cx->CR1 |= temreg;
-
 	//Configure the FREQ field of CR2
 	temreg = 0;
 	temreg = RCC_GetPCLK1Value() / 1000000;
@@ -276,14 +271,14 @@ void I2C_MasterRecieveData(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_
 		//1. Disable ACKing
 		I2C_ManageAcking(pI2CHandler->pI2Cx, DISABLE);
 
-		//2. Generate STOP condition
-		I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
-
-		//3. Clear the ADDR flag
+		//2. Clear the ADDR flag
 		I2C_ClearADDRFlag(pI2CHandler->pI2Cx);
 
-		//4. wait until RXNE = 1
+		//3. wait until RXNE = 1
 		while (!I2C_GetFlagStatusSR1(pI2CHandler->pI2Cx, I2C_FLAG_RxNE));
+
+		//4. Generate STOP condition
+		I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
 
 		//5. Read data in buffer DR
 		*pRxBuffer = pI2CHandler->pI2Cx->DR;
@@ -314,21 +309,18 @@ void I2C_MasterRecieveData(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_
 			//Increment the buffer address
 			pRxBuffer++;
 		}
+	}
 		//Re-Enable ACKing
 		if(pI2CHandler->I2CConfig.I2C_ACKControl == I2C_ACK_ENABLE)
 		{
 			I2C_ManageAcking(pI2CHandler->pI2Cx, ENABLE);
 		}
-	}
 }
 void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnOrDI)
 {
 	if (EnOrDI == ENABLE)
 	{
 		pI2Cx->CR1 |= 1<<I2C_CR1_PE_Pos;
-
-		//Enable the ACK bit in CR1
-		pI2Cx->CR1	|= 1 << I2C_CR1_ACK_Pos;
 	}else
 	{
 		pI2Cx->CR1 &= ~(1<<I2C_CR1_PE_Pos);
