@@ -8,6 +8,7 @@
 
 
 #include <string.h>
+#include <stdio.h>
 #include "stm32f407xx.h"
 #include "stm32f407xx_gpio_driver.h"
 #include "stm32f407xx_i2c_driver.h"
@@ -108,14 +109,14 @@ int main (void)
 		delay();
 
 		command_code = 0x51;
-		I2C_MasterSendData(&I2C1Handler, &command_code,1, SLAVEADDR);
+		I2C_MasterSendData(&I2C1Handler, &command_code,1, SLAVEADDR,I2C_ENABLE_SR);
 
-		I2C_MasterRecieveData(&I2C1Handler, &len, 1, SLAVEADDR);
+		I2C_MasterRecieveData(&I2C1Handler, &len, 1, SLAVEADDR,I2C_ENABLE_SR);
 
 		command_code = 0x52;
-		I2C_MasterSendData(&I2C1Handler, &command_code,1, SLAVEADDR);
+		I2C_MasterSendData(&I2C1Handler, &command_code,1, SLAVEADDR,I2C_ENABLE_SR);
 
-		I2C_MasterRecieveData(&I2C1Handler, rcv_buf, len, SLAVEADDR);
+		I2C_MasterRecieveData(&I2C1Handler, rcv_buf, len, SLAVEADDR,I2C_DISABLE_SR);
 
 		rcv_buf[len+1]='\0';
 		printf("Data receive is :%s \n",rcv_buf);
