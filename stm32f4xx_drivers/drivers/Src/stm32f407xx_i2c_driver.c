@@ -325,6 +325,17 @@ void I2C_MasterRecieveData(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_
 			I2C_ManageAcking(pI2CHandler->pI2Cx, ENABLE);
 		}
 }
+
+uint8_t I2C_MasterSendDataIT(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t Len,uint8_t SlaveAddr,uint8_t Sr)
+{
+
+}
+
+uint8_t I2C_MasterRecieveDataIT(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_t Len,uint8_t SlaveAddr,uint8_t Sr)
+{
+
+}
+
 void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnOrDI)
 {
 	if (EnOrDI == ENABLE)
