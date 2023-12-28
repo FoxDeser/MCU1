@@ -328,12 +328,59 @@ void I2C_MasterRecieveData(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_
 
 uint8_t I2C_MasterSendDataIT(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint32_t Len,uint8_t SlaveAddr,uint8_t Sr)
 {
+	uint8_t busystate = pI2CHandler->TxRxState;
 
+	if( (busystate != I2C_BUSY_IN_TX) && (busystate != I2C_BUSY_IN_RX))
+	{
+		pI2CHandler->pTxBuffer =  pTxbuffer;
+		pI2CHandler->TxLen = Len;
+		pI2CHandler->TxRxState = I2C_BUSY_IN_TX;
+		pI2CHandler->DevAddr = SlaveAddr;
+		pI2CHandler->Sr = Sr;
+
+		//Implement code to Generate START Condition
+		I2C_GenerateStartCondition(pI2CHandler->pI2Cx);
+
+		//Implement the code to enable ITBUFEN Control Bit
+		pI2CHandler->pI2Cx->CR2 |= ( 1 << I2C_CR2_ITBUFEN_Pos);
+
+		//Implement the code to enable ITEVTEN Control Bit
+		pI2CHandler->pI2Cx->CR2 |= ( 1 << I2C_CR2_ITEVTEN_Pos);
+
+		//Implement the code to enable ITERREN Control Bit
+		pI2CHandler->pI2Cx->CR2 |= ( 1 << I2C_CR2_ITERREN_Pos);
+	}
+
+	return busystate;
 }
 
 uint8_t I2C_MasterRecieveDataIT(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_t Len,uint8_t SlaveAddr,uint8_t Sr)
 {
+	uint8_t busystate = pI2CHandler->TxRxState;
 
+	if( (busystate != I2C_BUSY_IN_TX) && (busystate != I2C_BUSY_IN_RX))
+	{
+		pI2CHandler->pRxBuffer = pRxBuffer;
+		pI2CHandler->RxLen = Len;
+		pI2CHandler->TxRxState = I2C_BUSY_IN_RX;
+		pI2CHandler->RxSize = Len; //Rxsize is used in the ISR code to manage the data reception 
+		pI2CHandler->DevAddr = SlaveAddr;
+		pI2CHandler->Sr = Sr;
+
+		//Implement code to Generate START Condition
+		I2C_GenerateStartCondition(pI2CHandler->pI2Cx);
+
+		//Implement the code to enable ITBUFEN Control Bit
+		pI2CHandler->pI2Cx->CR2 |= ( 1 << I2C_CR2_ITBUFEN_Pos);
+
+		//Implement the code to enable ITEVTEN Control Bit
+		pI2CHandler->pI2Cx->CR2 |= ( 1 << I2C_CR2_ITEVTEN_Pos);
+
+		//Implement the code to enable ITERREN Control Bit
+		pI2CHandler->pI2Cx->CR2 |= ( 1 << I2C_CR2_ITERREN_Pos);
+	}
+
+	return busystate;
 }
 
 void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnOrDI)
