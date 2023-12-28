@@ -32,7 +32,22 @@ typedef struct
 {
 	I2C_RegDef_t*	 pI2Cx;		//This holds the base address of I2Cx peripheral
 	I2C_Config_t	 I2CConfig;
+    uint8_t          *pTxBuffer; //To store the app. Tx buffer address
+    uint8_t          *pRxBuffer; //To store the app. Rx buffer address
+    uint32_t         TxLen;      //To store Tx len
+    uint32_t         RxLen;      //To store Rx len
+    uint8_t          TxRxState;  //To store the communication state
+    uint8_t          DevAddr;    //To store slave/device address
+    uint8_t          RxSize;     //To store Rx size
+    uint8_t          Sr;         //To store repeated start value  
 }I2C_Handler_t;
+
+/*
+ * I2C application state
+*/
+#define I2C_READY          0
+#define I2C_BUSY_IN_RX     1
+#define I2C_BUSY_IN_TX     2
 
 /*
  * @I2C_SCLSpeed
