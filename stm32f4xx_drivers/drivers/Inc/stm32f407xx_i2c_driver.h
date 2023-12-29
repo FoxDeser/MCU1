@@ -133,6 +133,8 @@ uint8_t I2C_MasterRecieveDataIT(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,ui
  */
 void I2C_IRQInterruptConfig (uint8_t IRQNumber, uint8_t EnorDi);
 void I2C_IRQPriorityConfig(uint8_t IRQNumber,uint32_t IRQpriority);
+void I2C_EV_IRQHandling(I2C_Handler_t *pI2CHandler);
+void I2C_ER_IRQHandling(I2C_Handler_t *pI2CHandler);
 
 /*
  * Other Peripheral Control APIS
