@@ -103,6 +103,12 @@ typedef struct
 #define I2C_DISABLE_SR	RESET
 #define I2C_ENABLE_SR	SET
 
+/*
+ * Possible SPI Application events
+ */
+#define I2C_EV_TX_CMPLT 	0
+#define I2C_EV_STOP			1
+#define I2C_EV_RX_CMLT		2
 
 /*****************************************************************************************
  * 						APIs supported by this driver
