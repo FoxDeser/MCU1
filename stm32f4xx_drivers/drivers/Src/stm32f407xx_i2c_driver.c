@@ -767,3 +767,72 @@ void I2C_CloseReceiveData(I2C_Handler_t* pI2C_Handler)
 		I2C_ManageAcking(pI2C_Handler->pI2Cx, ENABLE);
 	}
 }
+
+void I2C_ER_IRQHandling(I2C_Handler_t *pI2CHandler)
+{
+
+	uint32_t temp1,temp2;
+
+    //Know the status of  ITERREN control bit in the CR2
+	temp2 = (pI2CHandler->pI2Cx->CR2) & ( 1 << I2C_CR2_ITERREN_Pos);
+
+
+/***********************Check for Bus error************************************/
+	temp1 = (pI2CHandler->pI2Cx->SR1) & ( 1<< I2C_SR1_BERR_Pos);
+	if(temp1  && temp2 )
+	{
+		//This is Bus error
+		//Implement the code to clear the buss error flag
+		pI2CHandler->pI2Cx->SR1 &= ~( 1 << I2C_SR1_BERR_Pos);
+
+		//Implement the code to notify the application about the error
+	    I2C_ApplicationEventCallback(pI2CHandler,I2C_ERROR_BERR);
+	}
+
+/***********************Check for arbitration lost error************************************/
+	temp1 = (pI2CHandler->pI2Cx->SR1) & ( 1 << I2C_SR1_ARLO_Pos );
+	if(temp1  && temp2)
+	{
+		//This is arbitration lost error
+
+		//Implement the code to clear the arbitration lost error flag
+
+		//Implement the code to notify the application about the error
+
+	}
+
+/***********************Check for ACK failure  error************************************/
+
+	temp1 = (pI2CHandler->pI2Cx->SR1) & ( 1 << I2C_SR1_AF_Pos);
+	if(temp1  && temp2)
+	{
+		//This is ACK failure error
+
+	    //Implement the code to clear the ACK failure error flag
+
+		//Implement the code to notify the application about the error
+	}
+
+/***********************Check for Overrun/underrun error************************************/
+	temp1 = (pI2CHandler->pI2Cx->SR1) & ( 1 << I2C_SR1_OVR_Pos);
+	if(temp1  && temp2)
+	{
+		//This is Overrun/underrun
+
+	    //Implement the code to clear the Overrun/underrun error flag
+
+		//Implement the code to notify the application about the error
+	}
+
+/***********************Check for Time out error************************************/
+	temp1 = (pI2CHandler->pI2Cx->SR1) & ( 1 << I2C_SR1_TIMEOUT_Pos);
+	if(temp1  && temp2)
+	{
+		//This is Time out error
+
+	    //Implement the code to clear the Time out error flag
+
+		//Implement the code to notify the application about the error
+	}
+
+}
