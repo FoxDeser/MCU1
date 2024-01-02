@@ -10,11 +10,9 @@
 static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx);
 static void I2C_ExecuteAddressPhaseWrite(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr);
 static void I2C_ExecuteAddressPhaseRead(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr);
-static void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx);
 static void I2C_ClearADDRFlag(I2C_Handler_t* pI2CHandle);
 static void I2C_MasterHandlerRNXEInterrupt (I2C_Handler_t* pI2CHandler);
 static void I2C_MasterHandlerTXEInterrupt (I2C_Handler_t* pI2CHandle);
-static void I2C_CloseSendData(I2C_Handler_t* pI2C_Handler);
 static void I2C_CloseReceiveData(I2C_Handler_t* pI2C_Handler);
 
 /*********************************************************************
@@ -733,7 +731,7 @@ void I2C_MasterHandlerRNXEInterrupt (I2C_Handler_t* pI2CHandler)
 			I2C_CloseReceiveData(pI2CHandler);
 
 			//3. Notify the application
-			I2C_ApplicationEventCallback(pI2CHandler, I2C_EV_RX_CMLT);
+			I2C_ApplicationEventCallback(pI2CHandler, I2C_EV_RX_CMPLT);
 		}
 }
 
