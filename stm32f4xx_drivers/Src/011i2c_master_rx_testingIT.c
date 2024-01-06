@@ -115,14 +115,14 @@ int main (void)
 		delay();
 
 		command_code = 0x51;
-		while(I2C_MasterSendDataIT(&I2C1Handler, &command_code,1, SLAVEADDR,I2C_ENABLE_SR) != I2C_READY);
-
-		while(I2C_MasterRecieveDataIT(&I2C1Handler, &len, 1, SLAVEADDR,I2C_ENABLE_SR) != I2C_READY);
-
+		while(I2C_MasterSendDataIT(&I2C1Handler, &command_code,1, SLAVEADDR,I2C_DISABLE_SR) != I2C_READY);
+		delay();
+		while(I2C_MasterReceiveDataIT(&I2C1Handler, &len, 1, SLAVEADDR,I2C_ENABLE_SR) != I2C_READY);
+		delay();
 		command_code = 0x52;
 		while(I2C_MasterSendDataIT(&I2C1Handler, &command_code,1, SLAVEADDR,I2C_ENABLE_SR) != I2C_READY);
 
-		while(I2C_MasterRecieveDataIT(&I2C1Handler, rcv_buf, len, SLAVEADDR,I2C_DISABLE_SR) != I2C_READY);
+		while(I2C_MasterReceiveDataIT(&I2C1Handler, rcv_buf, len, SLAVEADDR,I2C_DISABLE_SR) != I2C_READY);
 
 		rxComplt = RESET;
 
