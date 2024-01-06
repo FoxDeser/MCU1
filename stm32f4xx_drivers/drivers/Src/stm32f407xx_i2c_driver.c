@@ -11,7 +11,7 @@ static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx);
 static void I2C_ExecuteAddressPhaseWrite(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr);
 static void I2C_ExecuteAddressPhaseRead(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr);
 static void I2C_ClearADDRFlag(I2C_Handler_t* pI2CHandle);
-static void I2C_MasterHandlerRNXEInterrupt (I2C_Handler_t* pI2CHandler);
+static void I2C_MasterHandlerRXNEInterrupt (I2C_Handler_t* pI2CHandler);
 static void I2C_MasterHandlerTXEInterrupt (I2C_Handler_t* pI2CHandle);
 static void I2C_CloseReceiveData(I2C_Handler_t* pI2C_Handler);
 
@@ -356,7 +356,7 @@ uint8_t I2C_MasterSendDataIT(I2C_Handler_t *pI2CHandler,uint8_t *pTxbuffer,uint3
 	return busystate;
 }
 
-uint8_t I2C_MasterRecieveDataIT(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_t Len,uint8_t SlaveAddr,uint8_t Sr)
+uint8_t I2C_MasterReceiveDataIT(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,uint32_t Len,uint8_t SlaveAddr,uint8_t Sr)
 {
 	uint8_t busystate = pI2CHandler->TxRxState;
 
@@ -619,7 +619,7 @@ void I2C_EV_IRQHandling(I2C_Handler_t *pI2CHandler)
 					//1. Generate the STOP condition
 					if (pI2CHandler->Sr == I2C_DISABLE_SR)
 					{
-						I2C_GenerateStartCondition(pI2CHandler->pI2Cx);
+						I2C_GenerateStopCondition(pI2CHandler->pI2Cx);
 					}
 					//2. Reset all the member elements of the handle structure
 					I2C_CloseSendData(pI2CHandler);
@@ -676,7 +676,7 @@ void I2C_EV_IRQHandling(I2C_Handler_t *pI2CHandler)
 			//RxNE flag is set
 			if(pI2CHandler->TxRxState == I2C_BUSY_IN_RX)
 			{
-				I2C_MasterHandlerRNXEInterrupt(pI2CHandler);
+				I2C_MasterHandlerRXNEInterrupt(pI2CHandler);
 			}
 		}
 	}
@@ -697,7 +697,7 @@ void I2C_MasterHandlerTXEInterrupt (I2C_Handler_t* pI2CHandler)
 		}
 }
 
-void I2C_MasterHandlerRNXEInterrupt (I2C_Handler_t* pI2CHandler)
+void I2C_MasterHandlerRXNEInterrupt (I2C_Handler_t* pI2CHandler)
 {
 		//We have to do to the data reception
 		if(pI2CHandler->RxSize ==1)
@@ -716,10 +716,10 @@ void I2C_MasterHandlerRNXEInterrupt (I2C_Handler_t* pI2CHandler)
 
 			//Read DR
 			*pI2CHandler->pRxBuffer = pI2CHandler->pI2Cx->DR;
-			pI2CHandler->pTxBuffer++;
+			pI2CHandler->pRxBuffer++;
 			pI2CHandler->RxLen--;
 		}
-		if(pI2CHandler->RxSize == 0)
+		if(pI2CHandler->RxLen == 0)
 		{
 			//Close the I2C data reception and notify application
 			if (pI2CHandler->Sr == I2C_DISABLE_SR)
@@ -759,6 +759,7 @@ void I2C_CloseReceiveData(I2C_Handler_t* pI2C_Handler)
 	pI2C_Handler->TxRxState = I2C_READY;
 	pI2C_Handler->pRxBuffer = NULL;
 	pI2C_Handler->RxLen = 0;
+	pI2C_Handler->RxSize = 0;
 
 	if (pI2C_Handler->I2CConfig.I2C_ACKControl == I2C_ACK_ENABLE)
 	{
