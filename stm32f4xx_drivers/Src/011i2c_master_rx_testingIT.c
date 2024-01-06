@@ -13,7 +13,7 @@
 #include "stm32f407xx_i2c_driver.h"
 
 #define MY_ADDR		 0x24
-#define SLAVEADDR	 0x68
+#define SLAVEADDR	 0x66 //Right is 0x68
 
 extern void initialise_monitor_handles(void);
 
@@ -116,9 +116,9 @@ int main (void)
 
 		command_code = 0x51;
 		while(I2C_MasterSendDataIT(&I2C1Handler, &command_code,1, SLAVEADDR,I2C_DISABLE_SR) != I2C_READY);
-		delay();
+
 		while(I2C_MasterReceiveDataIT(&I2C1Handler, &len, 1, SLAVEADDR,I2C_ENABLE_SR) != I2C_READY);
-		delay();
+
 		command_code = 0x52;
 		while(I2C_MasterSendDataIT(&I2C1Handler, &command_code,1, SLAVEADDR,I2C_ENABLE_SR) != I2C_READY);
 

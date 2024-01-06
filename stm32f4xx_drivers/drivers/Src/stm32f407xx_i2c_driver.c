@@ -806,7 +806,7 @@ void I2C_ER_IRQHandling(I2C_Handler_t *pI2CHandler)
 	if(temp1  && temp2)
 	{
 		//This is ACK failure error
-
+		I2C_ApplicationEventCallback(pI2CHandler,I2C_ERROR_AF);
 	    //Implement the code to clear the ACK failure error flag
 
 		//Implement the code to notify the application about the error
