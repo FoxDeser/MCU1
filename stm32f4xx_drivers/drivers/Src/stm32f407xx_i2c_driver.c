@@ -385,6 +385,16 @@ uint8_t I2C_MasterReceiveDataIT(I2C_Handler_t *pI2CHandler,uint8_t *pRxBuffer,ui
 	return busystate;
 }
 
+void I2C_SlaveSendData(I2C_RegDef_t *pI2C, uint8_t data)
+{
+	pI2C->DR = data;
+}
+uint8_t I2C_SlaveReceiveData(I2C_RegDef_t *pI2C)
+{
+	return (uint8_t) pI2C->DR;
+}
+
+
 void I2C_PeripheralControl(I2C_RegDef_t *pI2Cx, uint8_t EnOrDI)
 {
 	if (EnOrDI == ENABLE)
@@ -663,6 +673,14 @@ void I2C_EV_IRQHandling(I2C_Handler_t *pI2CHandler)
 			{
 				I2C_MasterHandlerTXEInterrupt(pI2CHandler);
 			}
+		}else
+		{
+			//Slave mode
+			//make sure that the slave is really in transmitter mode
+			if(pI2CHandler->pI2Cx->SR2 & (1 << I2C_SR2_TRA_Pos))
+			{
+				I2C_ApplicationEventCallback(pI2CHandler, I2C_EV_DATA_REQ);
+			}
 		}
 	}
 
@@ -677,6 +695,14 @@ void I2C_EV_IRQHandling(I2C_Handler_t *pI2CHandler)
 			if(pI2CHandler->TxRxState == I2C_BUSY_IN_RX)
 			{
 				I2C_MasterHandlerRXNEInterrupt(pI2CHandler);
+			}
+		}else
+		{
+			//Slave
+			//make sure that the slave is really in transmitter mode
+			if(pI2CHandler->pI2Cx->SR2 & (1 << I2C_SR2_TRA_Pos))
+			{
+				I2C_ApplicationEventCallback(pI2CHandler, I2C_EV_DATA_RCV);
 			}
 		}
 	}
@@ -806,10 +832,10 @@ void I2C_ER_IRQHandling(I2C_Handler_t *pI2CHandler)
 	if(temp1  && temp2)
 	{
 		//This is ACK failure error
-		I2C_ApplicationEventCallback(pI2CHandler,I2C_ERROR_AF);
 	    //Implement the code to clear the ACK failure error flag
-
+		pI2CHandler->pI2Cx->SR1 &= ~(1 << I2C_SR1_AF_Pos);
 		//Implement the code to notify the application about the error
+		I2C_ApplicationEventCallback(pI2CHandler,I2C_ERROR_AF);
 	}
 
 /***********************Check for Overrun/underrun error************************************/
