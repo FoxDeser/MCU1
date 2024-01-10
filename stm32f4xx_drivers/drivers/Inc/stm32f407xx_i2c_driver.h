@@ -163,6 +163,9 @@ void I2C_ManageAcking(I2C_RegDef_t* pI2Cx,uint8_t EnorDi);
 
 void I2C_CloseSendData(I2C_Handler_t* pI2C_Handler);
 void I2C_GenerateStopCondition(I2C_RegDef_t* pI2Cx);
+
+void I2C_SlaveControlCallbackEvents(I2C_RegDef_t* pI2Cx,uint8_t EnorDi);
+
 /*
  * Application call back
  */
