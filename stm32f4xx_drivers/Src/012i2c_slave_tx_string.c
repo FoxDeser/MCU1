@@ -23,7 +23,7 @@ void delay(void)
 I2C_Handler_t I2C1Handler;
 
 //tx buffer
-uint8_t Tx_buf[32] = "STM32 I2C Slave mode";
+uint8_t Tx_buf[32] = "Thinh Tran from RVC";
 
 /*
  * PB6 --> I2C1_SCL
@@ -111,12 +111,12 @@ void I2C_ApplicationEventCallback(I2C_Handler_t *pI2CHandler,uint8_t Application
 		}else if (commandCode == 0x52)
 		{
 			//Send the contents of Tx_buf
-			I2C_SlaveSendData(pI2CHandler->pI2Cx,Tx_buf[Cnt]);
+			I2C_SlaveSendData(pI2CHandler->pI2Cx,Tx_buf[Cnt++]);
 		}
 	}else if (ApplicationEvent == I2C_EV_DATA_RCV)
 	{
 		//Data is waiting for the slave to read. Slave has to read it
-		commandCode == I2C_SlaveReceiveData(pI2CHandler->pI2Cx);
+		commandCode = I2C_SlaveReceiveData(pI2CHandler->pI2Cx);
 
 	}else if (ApplicationEvent == I2C_ERROR_AF)
 	{
