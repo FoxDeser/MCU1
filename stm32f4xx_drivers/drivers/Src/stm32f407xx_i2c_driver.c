@@ -861,3 +861,28 @@ void I2C_ER_IRQHandling(I2C_Handler_t *pI2CHandler)
 	}
 
 }
+
+void I2C_SlaveControlCallbackEvents(I2C_RegDef_t* pI2Cx,uint8_t EnorDi)
+{
+	if (EnorDi == ENABLE)
+	{
+		//Implement the code to enable ITBUFEN Control Bit
+		pI2Cx->CR2 |= ( 1 << I2C_CR2_ITBUFEN_Pos);
+
+		//Implement the code to enable ITEVTEN Control Bit
+		pI2Cx->CR2 |= ( 1 << I2C_CR2_ITEVTEN_Pos);
+
+		//Implement the code to enable ITERREN Control Bit
+		pI2Cx->CR2 |= ( 1 << I2C_CR2_ITERREN_Pos);
+	}else
+	{
+		//Implement the code to enable ITBUFEN Control Bit
+		pI2Cx->CR2 &= ~( 1 << I2C_CR2_ITBUFEN_Pos);
+
+		//Implement the code to enable ITEVTEN Control Bit
+		pI2Cx->CR2 &= ~( 1 << I2C_CR2_ITEVTEN_Pos);
+
+		//Implement the code to enable ITERREN Control Bit
+		pI2Cx->CR2 &= ~( 1 << I2C_CR2_ITERREN_Pos);
+	}
+}
