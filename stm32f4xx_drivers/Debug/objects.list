@@ -1,4 +1,4 @@
-"Src/008spi_message_rcv_it.o"
+"Src/012i2c_slave_tx_string.o"
 "Startup/startup_stm32f407vgtx.o"
 "drivers/Src/stm32f407xx_gpio_driver.o"
 "drivers/Src/stm32f407xx_i2c_driver.o"

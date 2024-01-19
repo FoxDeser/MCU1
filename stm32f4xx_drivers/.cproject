@@ -86,7 +86,7 @@
 					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Inc"/>
-						<entry excluding="005spi_tx_testing.c|006spi_txonly_arduino.c|007spi_cmd_handling.c|004button_interrupt.c|003led_button_ext.c|002led_button.c|001led_toggle.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
+						<entry excluding="011i2c_master_rx_testingIT.c|010i2c_master_rx_testing.c|009i2c_master_tx_testing.c|008spi_message_rcv_it.c|005spi_tx_testing.c|006spi_txonly_arduino.c|007spi_cmd_handling.c|004button_interrupt.c|003led_button_ext.c|002led_button.c|001led_toggle.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Startup"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="drivers"/>
 					</sourceEntries>
