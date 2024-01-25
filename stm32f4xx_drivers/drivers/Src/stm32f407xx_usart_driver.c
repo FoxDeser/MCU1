@@ -317,7 +317,7 @@ void USART_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
  *
  * @Note              -  none
  */
-void USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
+void USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQpriority)
 {
 	//1. first find out ipr register
 	uint8_t prx 		= IRQNumber / 4 ;
@@ -344,7 +344,7 @@ void USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQPriority)
  */
 void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t EnOrDi)
 {
-	if (EnOrDI == ENABLE)
+	if (EnOrDi == ENABLE)
 	{
 		pUSARTx->CR1 |= 1<< USART_CR1_UE_Pos;
 	}else
@@ -368,7 +368,7 @@ void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t EnOrDi)
  */
 uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx , uint32_t FlagName)
 {
-	if(pUSARTx->SR & FLAG_NAME)
+	if(pUSARTx->SR & FlagName)
 		{
 			return FLAG_SET;
 		}
@@ -391,5 +391,5 @@ uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx , uint32_t FlagName)
  */
 void USART_ClearFlag(USART_RegDef_t *pUSARTx, uint16_t StatusFlagName)
 {
-	pUSARTx->SR &= ~(1<<StatusFlagName)
+	pUSARTx->SR &= ~(1<<StatusFlagName);
 }
