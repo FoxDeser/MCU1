@@ -23,7 +23,7 @@ void delay(void)
 I2C_Handler_t I2C1Handler;
 
 //tx buffer
-uint8_t Tx_buf[32] = "Thinh Tran from RVCHIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII";
+uint8_t Tx_buf[32] = "Thinh Tran from RVC";
 
 /*
  * PB6 --> I2C1_SCL

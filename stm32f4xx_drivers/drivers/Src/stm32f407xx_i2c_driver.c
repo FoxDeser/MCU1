@@ -6,6 +6,7 @@
  */
 
 #include "stm32f407xx_I2C_driver.h"
+#include "stm32f407xx_rcc_driver.h"
 
 static void I2C_GenerateStartCondition(I2C_RegDef_t* pI2Cx);
 static void I2C_ExecuteAddressPhaseWrite(I2C_RegDef_t* pI2Cx,uint8_t SlaveAddr);
