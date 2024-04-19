@@ -524,7 +524,7 @@ void USART_PeripheralControl(USART_RegDef_t *pUSARTx, uint8_t EnOrDi)
  */
 uint8_t USART_GetFlagStatus(USART_RegDef_t *pUSARTx , uint32_t FlagName)
 {
-	if(pUSARTx->SR & FlagName)
+	if(pUSARTx->SR & (1<<FlagName))
 		{
 			return FLAG_SET;
 		}
