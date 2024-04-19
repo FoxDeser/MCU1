@@ -11,7 +11,7 @@
 #include "stm32f407xx_usart_driver.h"
 #include "stm32f407xx_gpio_driver.h"
 
-char msg[1024] = "UART Tx testing...\n\r";
+char msg[1024] = "Tran Thi Anh Thi...\n\r";
 
 USART_Handle_t usart2_handle;
 
