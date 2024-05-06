@@ -34,8 +34,32 @@ typedef struct
 {
     USART_RegDef_t  *pUSARTx;
     USART_Config_t    USART_Config;
+    uint8_t          *pTxBuffer; //To store the app. Tx buffer address
+    uint8_t          *pRxBuffer; //To store the app. Rx buffer address
+    uint32_t         TxLen;      //To store Tx len
+    uint32_t         RxLen;      //To store Rx len
+    uint8_t          TxBusyState;  //To store the communication state
+    uint8_t          RxBusyState;  //To store the communication state
 }USART_Handle_t;
 
+/*
+ * USART application state
+*/
+#define USART_READY         0
+#define USART_BUSY_IN_TX    1
+#define USART_BUSY_IN_RX    2
+
+/*
+ * Possible USART Application events
+ */
+#define USART_EVENT_TX_CMPLT        0
+#define USART_EVENT_RX_CMPLT        1
+#define USART_EVENT_CTS             2
+#define USART_EVENT_IDLE            3
+#define USART_EVENT_ORE             4
+#define USART_ERREVENT_FE           5
+#define USART_ERREVENT_PE           6
+#define USART_ERREVENT_ORE          7
 /*
  *@USART_Mode
  *Possible options for /2
