@@ -331,59 +331,6 @@ void USART_ReceiveData(USART_Handle_t *pUSARTHandle, uint8_t *pRxBuffer, uint32_
 }
 
 /*********************************************************************
- * IRQ Configuration and ISR handling
- *********************************************************************/
-/*********************************************************************
- * @fn      		  - USART_IRQInterruptConfig
- *
- * @brief             -
- *
- * @param[in]         -
- * @param[in]         -
- * @param[in]         -
- *
- * @return            -  none
- *
- * @Note              -  none
- */
-void USART_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
-{
-		if (EnorDi == ENABLE)
-		{
-			if (IRQNumber <=31 )
-			{
-				//program ISER0 register
-				*NVIC_ISER0 |= 1 << IRQNumber;
-
-			}else if(IRQNumber >31 && IRQNumber < 64)
-			{
-				//program ISER1 register
-				*NVIC_ISER1 |= (1 << (IRQNumber % 32));
-			}else if(IRQNumber >=64 && IRQNumber < 96)
-			{
-				//program ISER2 register
-				*NVIC_ISER2 |= (1 << (IRQNumber % 64));
-			}
-		}else
-		{
-			if (IRQNumber <=31 )
-			{
-				//program ICER0 register
-				*NVIC_ICER0 |= 1 << IRQNumber;
-
-			}else if(IRQNumber >31 && IRQNumber < 64)
-			{
-				//program ICER1 register
-				*NVIC_ICER1 |= (1 << (IRQNumber % 32));
-			}else if(IRQNumber >=64 && IRQNumber < 96)
-			{
-				//program ICER2 register
-				*NVIC_ICER2 |= (1 << (IRQNumber % 64));
-			}
-		}
-}
-
-/*********************************************************************
  * @fn      		  - USART_SetBaudRate
  *
  * @brief             -
@@ -555,7 +502,7 @@ void USART_IRQPriorityConfig(uint8_t IRQNumber, uint32_t IRQpriority)
 void USART_IRQHandling(USART_Handle_t *pUSARTHandle)
 {
 
-	uint32_t temp1 , temp2, temp3;
+	uint32_t temp1 , temp2;
 	uint16_t *pdata;
 
 /*************************Check for TC flag ********************************************/
@@ -765,7 +712,7 @@ void USART_IRQHandling(USART_Handle_t *pUSARTHandle)
 	temp2 = pUSARTHandle->pUSARTx->CR3 & ( 1 << USART_CR3_CTSE_Pos);
 	
 	//Implement the code to check the state of CTSIE bit in CR3 (This bit is not available for UART4 & UART5.)
-	temp3 = pUSARTHandle->pUSARTx->CR3 & ( 1 << USART_CR3_CTSIE_Pos);
+//	temp3 = pUSARTHandle->pUSARTx->CR3 & ( 1 << USART_CR3_CTSIE_Pos);
 
 
 	if(temp1  && temp2 )
