@@ -33,7 +33,7 @@ extern void initialise_monitor_handles();
 void USART2_Init(void)
 {
 	usart2_handle.pUSARTx = USART2;
-	usart2_handle.USART_Config.USART_Baud = USART_STD_BAUD_115200;
+	usart2_handle.USART_Config.USART_Baud = USART_STD_BAUD_9600;
 	usart2_handle.USART_Config.USART_HWFlowControl = USART_HW_FLOW_CTRL_NONE;
 	usart2_handle.USART_Config.USART_Mode = USART_MODE_TXRX;
 	usart2_handle.USART_Config.USART_NoOfStopBits = USART_STOPBITS_1;
@@ -122,7 +122,7 @@ int main(void)
 
 		//First lets enable the reception in interrupt mode
 		//this code enables the receive interrupt
-		while ( USART_ReceiveDataIT(&usart2_handle,rx_buf,strlen(msg[cnt])) != USART_READY );
+		while ( USART_ReceiveDataIT(&usart2_handle,(uint8_t *) &rx_buf[0],strlen(msg[cnt])) != USART_READY );
 
 		//Send the msg indexed by cnt in blocking mode
     	USART_SendData(&usart2_handle,(uint8_t*)msg[cnt],strlen(msg[cnt]));
